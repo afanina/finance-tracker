@@ -20,3 +20,8 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::redirect('/home', '/transactions');
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('transactions', TransactionController::class);
+    Route::get('/transactions-export', [TransactionController::class, 'export'])->name('transactions.export');
+});

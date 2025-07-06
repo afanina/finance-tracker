@@ -5,11 +5,17 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
+                <!-- Card Header dengan Tombol Tambah & Export -->
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4><i class="fas fa-chart-line me-2"></i>Dashboard Keuangan</h4>
-                    <a href="{{ route('transactions.create') }}" class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i>Tambah Transaksi
-                    </a>
+                    <div>
+                        <a href="{{ route('transactions.export') }}" class="btn btn-success me-2">
+                            <i class="fas fa-download me-1"></i>Export Excel
+                        </a>
+                        <a href="{{ route('transactions.create') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>Tambah Transaksi
+                        </a>
+                    </div>
                 </div>
 
                 <div class="card-body">
