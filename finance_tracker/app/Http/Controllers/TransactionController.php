@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Exports\TransactionsExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Exports\TransactionsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionController extends Controller
@@ -18,17 +18,17 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         $query = Auth::user()->transactions();
-
+        
         // Filter by type
         if ($request->has('type') && $request->type != '') {
             $query->where('type', $request->type);
         }
-
+        
         // Filter by category
         if ($request->has('category') && $request->category != '') {
             $query->where('category', $request->category);
         }
-
+        
         // Search
         if ($request->has('search') && $request->search != '') {
             $query->where(function($q) use ($request) {
@@ -36,25 +36,25 @@ class TransactionController extends Controller
                   ->orWhere('description', 'like', '%' . $request->search . '%');
             });
         }
-
+        
         // Date range filter
         if ($request->has('date_from') && $request->date_from != '') {
             $query->whereDate('transaction_date', '>=', $request->date_from);
         }
-
+        
         if ($request->has('date_to') && $request->date_to != '') {
             $query->whereDate('transaction_date', '<=', $request->date_to);
         }
-
+        
         $transactions = $query->orderBy('transaction_date', 'desc')->paginate(10);
-
+        
         // Keep filter parameters in pagination
         $transactions->appends($request->all());
-
+        
         $totalIncome = Auth::user()->transactions()->where('type', 'income')->sum('amount');
         $totalExpense = Auth::user()->transactions()->where('type', 'expense')->sum('amount');
         $balance = $totalIncome - $totalExpense;
-
+        
         // Get categories for filter dropdown
         $categories = Auth::user()->transactions()->distinct()->pluck('category');
 
@@ -64,11 +64,6 @@ class TransactionController extends Controller
     public function create()
     {
         return view('transactions.create');
-    }
-
-    public function export()
-    {
-        return Excel::download(new TransactionsExport, 'transactions.xlsx');
     }
 
     public function store(Request $request)
@@ -126,5 +121,10 @@ class TransactionController extends Controller
 
         return redirect()->route('transactions.index')
             ->with('success', 'Transaksi berhasil dihapus!');
+    }
+
+    public function export()
+    {
+        return Excel::download(new TransactionsExport, 'transactions.xlsx');
     }
 }

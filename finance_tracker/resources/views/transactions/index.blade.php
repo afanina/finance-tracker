@@ -5,7 +5,6 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <!-- Card Header dengan Tombol Tambah & Export -->
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4><i class="fas fa-chart-line me-2"></i>Dashboard Keuangan</h4>
                     <div>
@@ -83,7 +82,7 @@
                                     <div class="col-md-3">
                                         <label for="search" class="form-label">Cari</label>
                                         <input type="text" class="form-control" id="search" name="search" 
-                                            value="{{ request('search') }}" placeholder="Cari transaksi...">
+                                               value="{{ request('search') }}" placeholder="Cari transaksi...">
                                     </div>
                                     <div class="col-md-2">
                                         <label for="type" class="form-label">Tipe</label>
@@ -107,12 +106,12 @@
                                     <div class="col-md-2">
                                         <label for="date_from" class="form-label">Dari</label>
                                         <input type="date" class="form-control" id="date_from" name="date_from" 
-                                            value="{{ request('date_from') }}">
+                                               value="{{ request('date_from') }}">
                                     </div>
                                     <div class="col-md-2">
                                         <label for="date_to" class="form-label">Sampai</label>
                                         <input type="date" class="form-control" id="date_to" name="date_to" 
-                                            value="{{ request('date_to') }}">
+                                               value="{{ request('date_to') }}">
                                     </div>
                                     <div class="col-md-1">
                                         <label class="form-label">&nbsp;</label>
@@ -134,7 +133,7 @@
                             @endif
                         </div>
                     </div>
-                    
+
                     <!-- Transactions Table -->
                     <div class="table-responsive">
                         <table class="table table-striped">
