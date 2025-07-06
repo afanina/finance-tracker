@@ -69,6 +69,66 @@
                         </div>
                     </div>
 
+                    <!-- Filter Form -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form method="GET" action="{{ route('transactions.index') }}">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="search" class="form-label">Cari</label>
+                                        <input type="text" class="form-control" id="search" name="search" 
+                                            value="{{ request('search') }}" placeholder="Cari transaksi...">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="type" class="form-label">Tipe</label>
+                                        <select class="form-select" id="type" name="type">
+                                            <option value="">Semua</option>
+                                            <option value="income" {{ request('type') == 'income' ? 'selected' : '' }}>Pemasukan</option>
+                                            <option value="expense" {{ request('type') == 'expense' ? 'selected' : '' }}>Pengeluaran</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="category" class="form-label">Kategori</label>
+                                        <select class="form-select" id="category" name="category">
+                                            <option value="">Semua</option>
+                                            @foreach($categories as $category)
+                                                <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
+                                                    {{ $category }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="date_from" class="form-label">Dari</label>
+                                        <input type="date" class="form-control" id="date_from" name="date_from" 
+                                            value="{{ request('date_from') }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="date_to" class="form-label">Sampai</label>
+                                        <input type="date" class="form-control" id="date_to" name="date_to" 
+                                            value="{{ request('date_to') }}">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label class="form-label">&nbsp;</label>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            @if(request()->hasAny(['search', 'type', 'category', 'date_from', 'date_to']))
+                                <div class="mt-2">
+                                    <a href="{{ route('transactions.index') }}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-times me-1"></i>Reset Filter
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    
                     <!-- Transactions Table -->
                     <div class="table-responsive">
                         <table class="table table-striped">

@@ -13,23 +13,50 @@ class TransactionController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $transactions = Auth::user()->transactions()
-            ->orderBy('transaction_date', 'desc')
-            ->paginate(10);
-        
-        $totalIncome = Auth::user()->transactions()
-            ->where('type', 'income')
-            ->sum('amount');
-        
-        $totalExpense = Auth::user()->transactions()
-            ->where('type', 'expense')
-            ->sum('amount');
-        
+        $query = Auth::user()->transactions();
+
+        // Filter by type
+        if ($request->has('type') && $request->type != '') {
+            $query->where('type', $request->type);
+        }
+
+        // Filter by category
+        if ($request->has('category') && $request->category != '') {
+            $query->where('category', $request->category);
+        }
+
+        // Search
+        if ($request->has('search') && $request->search != '') {
+            $query->where(function($q) use ($request) {
+                $q->where('title', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Date range filter
+        if ($request->has('date_from') && $request->date_from != '') {
+            $query->whereDate('transaction_date', '>=', $request->date_from);
+        }
+
+        if ($request->has('date_to') && $request->date_to != '') {
+            $query->whereDate('transaction_date', '<=', $request->date_to);
+        }
+
+        $transactions = $query->orderBy('transaction_date', 'desc')->paginate(10);
+
+        // Keep filter parameters in pagination
+        $transactions->appends($request->all());
+
+        $totalIncome = Auth::user()->transactions()->where('type', 'income')->sum('amount');
+        $totalExpense = Auth::user()->transactions()->where('type', 'expense')->sum('amount');
         $balance = $totalIncome - $totalExpense;
 
-        return view('transactions.index', compact('transactions', 'totalIncome', 'totalExpense', 'balance'));
+        // Get categories for filter dropdown
+        $categories = Auth::user()->transactions()->distinct()->pluck('category');
+
+        return view('transactions.index', compact('transactions', 'totalIncome', 'totalExpense', 'balance', 'categories'));
     }
 
     public function create()
